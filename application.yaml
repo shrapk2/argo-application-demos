@@ -1,0 +1,51 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: sample_app1
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: Sample App1 Project
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+    - "*"
+
+  # Only permit applications to deploy to the guestbook namespace in the same cluster
+  destinations:
+    - namespace: "sampleapp1"
+      server: "https://kubernetes.default.svc"
+    - namespace: "argocd"
+      server: "https://kubernetes.default.svc"
+
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample_app1
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: sample_app1
+spec:
+  destination:
+    namespace: argocd
+    server: "https://kubernetes.default.svc"
+  project: sample_app1
+  source:
+    path: apps
+    repoURL: https://github.com/argoproj/argocd-example-apps
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
