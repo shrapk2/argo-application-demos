@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: sample_app1
+  name: sampleapp1
   # Finalizer that ensures that project is not deleted until it is not referenced by any application
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -30,16 +30,16 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sample_app1
+  name: sampleapp1
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   labels:
-    app: sample_app1
+    app: sampleapp1
 spec:
   destination:
     namespace: argocd
     server: "https://kubernetes.default.svc"
-  project: sample_app1
+  project: sampleapp1
   source:
     path: apps
     repoURL: https://github.com/argoproj/argocd-example-apps
