@@ -2,7 +2,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: sampleapp1
+  name: microservicesdemo
+  namespace: argocd
   # Finalizer that ensures that project is not deleted until it is not referenced by any application
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -16,7 +17,7 @@ spec:
 
   # Only permit applications to deploy to the guestbook namespace in the same cluster
   destinations:
-    - namespace: "sampleapp1"
+    - namespace: "microservicesdemo"
       server: "https://kubernetes.default.svc"
     - namespace: "argocd"
       server: "https://kubernetes.default.svc"
@@ -30,19 +31,19 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sampleapp1
+  name: microservicesdemo
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   labels:
-    app: sampleapp1
+    app: microservicesdemo
 spec:
   destination:
-    namespace: sampleapp1
+    namespace: microservicesdemo
     server: "https://kubernetes.default.svc"
-  project: sampleapp1
+  project: microservicesdemo
   source:
-    path: apps
+    path: microservices
     repoURL: https://github.com/argoproj/argocd-example-apps
     targetRevision: HEAD
   syncPolicy:
@@ -50,3 +51,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
