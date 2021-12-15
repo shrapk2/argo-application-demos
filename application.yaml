@@ -31,13 +31,14 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: sampleapp1
+  namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   labels:
     app: sampleapp1
 spec:
   destination:
-    namespace: argocd
+    namespace: sampleapp1
     server: "https://kubernetes.default.svc"
   project: sampleapp1
   source:
