@@ -2,49 +2,46 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: sampleapp1
+  name: appbundle-project-dev
   namespace: argocd
-  # Finalizer that ensures that project is not deleted until it is not referenced by any application
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  # Project description
-  description: Sample App1 Project
+  description: The app bundle POC project
 
-  # Allow manifests to deploy from any Git repos
   sourceRepos:
-    - "*"
+  - '*'
 
-  # Only permit applications to deploy to the guestbook namespace in the same cluster
   destinations:
-    - namespace: "sampleapp1"
-      server: "https://kubernetes.default.svc"
-    - namespace: "argocd"
-      server: "https://kubernetes.default.svc"
+  - namespace: '*'
+    server: '*'
+  # - namespace: "sampleapp1"
+  #   server: "https://kubernetes.default.svc"
+  # - namespace: "argocd"
+  #   server: "https://kubernetes.default.svc"
 
-  # Deny all cluster-scoped resources from being created, except for Namespace
   clusterResourceWhitelist:
-    - group: "*"
-      kind: "*"
+  - group: '*'
+    kind: '*'
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sampleapp1
+  name: root-appbundle-app-dev
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  - resources-finalizer.argocd.argoproj.io
   labels:
-    app: sampleapp1
+    app: appbundle
 spec:
   destination:
-    namespace: sampleapp1
+    namespace: appbundle
     server: "https://kubernetes.default.svc"
-  project: sampleapp1
+  project: appbundle-project-dev
   source:
-    path: apps
-    repoURL: https://github.com/argoproj/argocd-example-apps
+    path: argocd/apps-children/dev
+    repoURL: https://github.com/d0-labs/argocd-app-of-apps-parent
     targetRevision: HEAD
   syncPolicy:
     automated:
