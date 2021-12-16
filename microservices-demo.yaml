@@ -44,7 +44,7 @@ spec:
   project: microservicesdemo
   source:
     path: microservices
-    repoURL: https://github.com/argoproj/argocd-example-apps
+    repoURL: git@github.com:shrapk2/argo-application-demos.git
     targetRevision: HEAD
   syncPolicy:
     automated:
